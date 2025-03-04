@@ -1,18 +1,28 @@
+'use client' // App Router では usePathname を使うために必要
 import Link from 'next/link'
 import Image from 'next/image'
+import { usePathname } from 'next/navigation'
 
 export function Header() {
+  const pathname = usePathname() // () を追加して関数を実行
+
+  // メニューの情報を配列で管理
+  const menuItems = [
+    { name: 'Home', href: '/' },
+    { name: 'Gallery', href: '/gallery' },
+    { name: 'Contact', href: '/contact' },
+  ]
+
   return (
     <header className="mb-4 flex items-center justify-between py-4 md:py-8">
       {/* <!-- logo - start --> */}
-
       <Link
         href="/"
         className="inline-flex items-center gap-2.5 text-2xl font-bold text-black md:text-3xl"
         aria-label="logo"
       >
         <Image
-          src="/logo.svg" // SVGファイルのパスを指定
+          src="/logo.svg"
           width={95}
           height={94}
           alt=""
@@ -24,21 +34,22 @@ export function Header() {
 
       {/* <!-- nav - start --> */}
       <nav className="hidden gap-12 lg:flex">
-        <Link href="/" className="text-lg font-semibold text-indigo-500">
-          Home
-        </Link>
-        <Link
-          href="/gallery"
-          className="text-lg font-semibold text-gray-600 transition duration-100 hover:text-indigo-500 active:text-indigo-700"
-        >
-          Gallery
-        </Link>
-        <Link
-          href="/contact"
-          className="text-lg font-semibold text-gray-600 transition duration-100 hover:text-indigo-500 active:text-indigo-700"
-        >
-          Contact
-        </Link>
+        {menuItems.map(({ name, href }) => {
+          const isActive =
+            href === '/' ? pathname === '/' : pathname.startsWith(href)
+
+          return (
+            <Link
+              key={href}
+              href={href}
+              className={`text-lg font-semibold ${
+                isActive ? 'text-indigo-500' : 'text-gray-600'
+              } transition duration-100 hover:text-indigo-500 active:text-indigo-700`}
+            >
+              {name}
+            </Link>
+          )
+        })}
       </nav>
       {/* <!-- nav - end --> */}
 
@@ -55,7 +66,7 @@ export function Header() {
         className="inline-flex items-center gap-2 rounded-lg bg-gray-200 px-2.5 py-2 text-sm font-semibold text-gray-500 ring-indigo-300 hover:bg-gray-300 focus-visible:ring active:text-gray-700 md:text-base lg:hidden"
       >
         <Image
-          src="/hamburger.svg" // SVGファイルのパスを指定
+          src="/hamburger.svg"
           width={95}
           height={94}
           alt="ハンバーガーメニュー"
